@@ -19,6 +19,8 @@ pub use transaction::{
     response::{Transaction, TransactionReceipt},
 };
 
+pub mod userop;
+
 mod address_or_bytes;
 pub use address_or_bytes::AddressOrBytes;
 

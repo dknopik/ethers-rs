@@ -8,6 +8,7 @@ use futures_util::future::join_all;
 use serde::{de::DeserializeOwned, Serialize};
 use std::fmt::Debug;
 use url::Url;
+use ethers_core::types::userop::UserOp;
 
 use crate::{
     erc, EscalatingPending, EscalationPolicy, FilterKind, FilterWatcher, JsonRpcClient, LogQuery,
@@ -438,6 +439,15 @@ pub trait Middleware: Sync + Send + Debug {
         tx: Bytes,
     ) -> Result<PendingTransaction<'a, Self::Provider>, Self::Error> {
         self.inner().send_raw_transaction(tx).await.map_err(MiddlewareError::from_err)
+    }
+
+    /// Send a userop to the bundler
+    async fn send_user_operation<'a>(
+        &'a self,
+        userop: UserOp,
+        entry_point: Address,
+    ) -> Result<H256, Self::Error> {
+        self.inner().send_user_operation(userop, entry_point).await.map_err(MiddlewareError::from_err)
     }
 
     /// This returns true if either the middleware stack contains a `SignerMiddleware`, or the
